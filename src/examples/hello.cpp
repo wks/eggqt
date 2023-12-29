@@ -14,13 +14,12 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-#include "eggqt.h"
 #include <cstdio>
 #include <cmath>
 
-int main() {
-    hello();
-    printf("%lf\n", my_cos(M_PI / 3.0));
+#include "egg.h"
 
+int main() {
+    EggStart(640.0, 480.0);
     return 0;
 }

@@ -18,12 +18,8 @@
 
 #include <QtMath>
 
-#include "eggqt.h"
+#include "egg.h"
 
-void hello() {
-    printf("Hello world!\n");
-}
-
-double my_cos(double x) {
-    return qCos(x);
+void EggStart(double fWidth, double fHeight) {
+    printf("Egg is about to start. fWidth: %lf, fHeight: %lf\n", fWidth, fHeight);
 }

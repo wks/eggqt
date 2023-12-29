@@ -20,7 +20,7 @@ add_executable(hello
 
 target_include_directories(hello
     PRIVATE
-    ../libeggqt
+    ../include
     )
 
 target_link_libraries(hello

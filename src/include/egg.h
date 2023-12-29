@@ -14,7 +14,13 @@
 #ifndef _EGG_SUNNER_HIT     //防止多次包含egg.h，造成冲突
 #define _EGG_SUNNER_HIT
 
-#include <windows.h>		//使用Win32 API
+// [wks] 不。不使用Win32 API！
+// #include <windows.h>		//使用Win32 API
+
+// [wks] 我们自己定义BOOL类型。
+#ifndef BOOL
+#define BOOL bool
+#endif
 
 struct egg;
 
