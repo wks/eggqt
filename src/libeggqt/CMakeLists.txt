@@ -15,6 +15,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 qt_add_library(eggqt STATIC
+    eggqt_back.cpp
+    eggqt_back.hpp
+    eggqt_canvas.cpp
+    eggqt_canvas.hpp
+    eggqt_mainwindow.cpp
+    eggqt_mainwindow.hpp
     lib.cpp
     )
 
@@ -22,4 +28,8 @@ target_include_directories(eggqt
     PUBLIC
     ../include)
 
-target_link_libraries(eggqt PRIVATE Qt6::Core)
+target_link_libraries(eggqt
+    PRIVATE
+    Qt6::Core
+    Qt6::Widgets
+    )

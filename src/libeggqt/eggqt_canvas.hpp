@@ -14,19 +14,21 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-#include <cstdio>
+#pragma once
 
-#include <QtMath>
+#include <QWidget>
 
-#include "egg.h"
-#include "eggqt_back.hpp"
+namespace eggqt {
 
-void EggStart(double fWidth, double fHeight) {
-    printf("Egg is about to start. fWidth: %lf, fHeight: %lf\n", fWidth, fHeight);
+class EggQtCanvas : public QWidget {
+    Q_OBJECT
+public:
+    EggQtCanvas(size_t width, size_t height);
+    void paintEvent(QPaintEvent *event) override;
+    QSize sizeHint() const override;
+private:
+    size_t width;
+    size_t height;
+};
 
-    eggqt::start_ui(fWidth, fHeight);
-}
-
-void WaitForExit() {
-    eggqt::wait_for_exit();
-}
+} // namespace eggqt

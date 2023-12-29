@@ -14,19 +14,11 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-#include <cstdio>
+#pragma once
 
-#include <QtMath>
+namespace eggqt {
 
-#include "egg.h"
-#include "eggqt_back.hpp"
+void start_ui(double fWidth, double fHeight);
+void wait_for_exit();
 
-void EggStart(double fWidth, double fHeight) {
-    printf("Egg is about to start. fWidth: %lf, fHeight: %lf\n", fWidth, fHeight);
-
-    eggqt::start_ui(fWidth, fHeight);
-}
-
-void WaitForExit() {
-    eggqt::wait_for_exit();
-}
+} // namespace eggqt

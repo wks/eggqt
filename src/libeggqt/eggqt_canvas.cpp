@@ -14,19 +14,30 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-#include <cstdio>
+#include "eggqt_canvas.hpp"
 
-#include <QtMath>
+#include <QPainter>
 
-#include "egg.h"
-#include "eggqt_back.hpp"
+namespace eggqt {
 
-void EggStart(double fWidth, double fHeight) {
-    printf("Egg is about to start. fWidth: %lf, fHeight: %lf\n", fWidth, fHeight);
-
-    eggqt::start_ui(fWidth, fHeight);
+EggQtCanvas::EggQtCanvas(size_t width, size_t height) : width(width), height(height) {
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
-void WaitForExit() {
-    eggqt::wait_for_exit();
+void EggQtCanvas::paintEvent(QPaintEvent *event) {
+    QRect rect(10, 20, 80, 60);
+
+    QBrush whiteBrush(QColor::fromRgb(255, 255, 255));
+    QPen blackPen(QColor::fromRgb(0, 0, 0));
+
+    QPainter painter(this);
+    painter.fillRect(0, 0, width, height, whiteBrush);
+    painter.setPen(blackPen);
+    painter.drawRect(rect);
 }
+
+QSize EggQtCanvas::sizeHint() const {
+    return QSize(width, height);
+}
+
+} // namespace eggqt

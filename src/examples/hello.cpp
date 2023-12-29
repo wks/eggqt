@@ -20,6 +20,13 @@
 #include "egg.h"
 
 int main() {
-    EggStart(640.0, 480.0);
+    EggStart(16.0, 12.0);
+
+    printf("Close the window to exit.\n");
+
+    WaitForExit();
+
+    printf("Bye!\n");
+
     return 0;
 }
