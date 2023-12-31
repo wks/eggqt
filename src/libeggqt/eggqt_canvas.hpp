@@ -18,17 +18,19 @@
 
 #include <QWidget>
 
+#include "eggqt_aux.hpp"
+#include "eggqt_back.hpp"
+
 namespace eggqt {
 
 class EggQtCanvas : public QWidget {
     Q_OBJECT
 public:
-    EggQtCanvas(size_t width, size_t height);
+    EggQtCanvas(DrawingContext* ctx);
     void paintEvent(QPaintEvent *event) override;
     QSize sizeHint() const override;
 private:
-    size_t width;
-    size_t height;
+    DrawingContext* ctx;
 };
 
 } // namespace eggqt

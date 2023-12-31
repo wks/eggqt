@@ -16,7 +16,22 @@
 
 #pragma once
 
+#include <vector>
+
+#include "constants.hpp"
+#include "eggqt_aux.hpp"
+#include "eggqt_layer.hpp"
+
+
 namespace eggqt {
+
+class DrawingContext {
+public:
+    EggQtSize size;
+    std::vector<EggQtLayer> layers;
+    EggQtLayer* activeLayer;
+    DrawingContext(EggQtSize size);
+};
 
 void start_ui(double fWidth, double fHeight);
 void wait_for_exit();

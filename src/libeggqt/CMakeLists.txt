@@ -15,10 +15,14 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 qt_add_library(eggqt STATIC
+    constants.hpp
+    eggqt_aux.hpp
     eggqt_back.cpp
     eggqt_back.hpp
     eggqt_canvas.cpp
     eggqt_canvas.hpp
+    eggqt_layer.cpp
+    eggqt_layer.hpp
     eggqt_mainwindow.cpp
     eggqt_mainwindow.hpp
     lib.cpp

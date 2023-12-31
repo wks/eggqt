@@ -18,26 +18,32 @@
 
 #include <QPainter>
 
+#include "constants.hpp"
+#include "eggqt_aux.hpp"
+
 namespace eggqt {
 
-EggQtCanvas::EggQtCanvas(size_t width, size_t height) : width(width), height(height) {
+EggQtCanvas::EggQtCanvas(DrawingContext* ctx)
+    : ctx(ctx) {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
 void EggQtCanvas::paintEvent(QPaintEvent *event) {
-    QRect rect(10, 20, 80, 60);
+    QRectF rect(2.0, 1.0, 8.0, 6.0);
 
     QBrush whiteBrush(QColor::fromRgb(255, 255, 255));
-    QPen blackPen(QColor::fromRgb(0, 0, 0));
+    QPen blackPen(QColor::fromRgb(0, 0, 0), 0.05);
 
     QPainter painter(this);
-    painter.fillRect(0, 0, width, height, whiteBrush);
-    painter.setPen(blackPen);
-    painter.drawRect(rect);
+    painter.fillRect(0, 0, ctx->size.width, ctx->size.height, whiteBrush);
+
+    for (auto &layer : ctx->layers) {
+        painter.drawPixmap(0, 0, *layer.pixmap);
+    }
 }
 
 QSize EggQtCanvas::sizeHint() const {
-    return QSize(width, height);
+    return QSize(ctx->size.width, ctx->size.height);
 }
 
 } // namespace eggqt
