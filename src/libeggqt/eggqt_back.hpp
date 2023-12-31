@@ -29,6 +29,7 @@ public:
     EggQtSize size;
     std::vector<EggQtLayer> layers;
     EggQtLayer* activeLayer;
+    double devicePixelRatio;
     DrawingContext(EggQtSize size);
 };
 
@@ -36,6 +37,8 @@ void startUi(double fWidth, double fHeight);
 void movePen(double x, double y);
 void offsetPen(double dx, double dy);
 void drawLine(double dx, double dy);
+void drawString(char* pString);
+double getStringWidth(char* pString);
 void drawArc(double r, double dStart, double dSweep);
 void DrawEllipticalArc(double rx, double ry, double dStart, double dSweep);
 

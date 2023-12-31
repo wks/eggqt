@@ -38,6 +38,15 @@ void OffsetPen(double dx, double dy) {
 void DrawLine(double dx, double dy) {
     eggqt::drawLine(dx, dy);
 }
+
+void DrawString(char* pString) {
+    eggqt::drawString(pString);
+}
+
+double GetStringWidth(char* pString) {
+    return eggqt::getStringWidth(pString);
+}
+
 void DrawArc(double r, double dStart, double dSweep) {
     eggqt::drawArc(r, dStart, dSweep);
 }

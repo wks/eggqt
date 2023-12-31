@@ -38,7 +38,8 @@ static char argv0[] = "eggqt";
 static char *argv[] = {argv0, nullptr};
 
 DrawingContext::DrawingContext(EggQtSize size) : size(size) {
-    activeLayer = &layers.emplace_back(size, 2.0);
+    activeLayer = &layers.emplace_back(size, 20.0);
+    activeLayer->painter->fillRect(size.rectWhole(), DEFAULT_BACKGBROUND_COLOR);
 }
 
 struct EggQt {
@@ -51,14 +52,33 @@ struct EggQt {
         EggQtSize size = EggQtSize::fromSizeScaled(fWidth, fHeight, PIXELS_PER_CM);
 
         app = std::make_unique<QApplication>(argc, argv);
-        ctx = std::make_unique<DrawingContext>(size);
-
         mainWindow = std::make_unique<EggQtMainWindow>();
-        mainWindow->setLayout(new QGridLayout()); //use a layout for menu bar
-        canvas = new EggQtCanvas(ctx.get());
+        canvas = new EggQtCanvas();
         mainWindow->setCentralWidget(canvas);
 
+        ctx = std::make_unique<DrawingContext>(size);
+        canvas->setDrawingContext(ctx.get());
+
+        printf("mainWindow->devicePixelRatio() %lf\n", mainWindow->devicePixelRatio());
+        printf("mainWindow->devicePixelRatioF() %lf\n", mainWindow->devicePixelRatioF());
+        printf("canvas->devicePixelRatio() %lf\n", canvas->devicePixelRatio());
+        printf("canvas->devicePixelRatioF() %lf\n", canvas->devicePixelRatioF());
+        printf("mainWindow->window() %p\n", mainWindow->window());
+        printf("canvas->window() %p\n", canvas->window());
+        printf("mainWindow->window()->devicePixelRatio() %lf\n", mainWindow->window()->devicePixelRatio());
+        printf("canvas->window()->devicePixelRatio() %lf\n", canvas->window()->devicePixelRatio());
+
         mainWindow->show();
+
+        printf("mainWindow->devicePixelRatio() %lf\n", mainWindow->devicePixelRatio());
+        printf("mainWindow->devicePixelRatioF() %lf\n", mainWindow->devicePixelRatioF());
+        printf("canvas->devicePixelRatio() %lf\n", canvas->devicePixelRatio());
+        printf("canvas->devicePixelRatioF() %lf\n", canvas->devicePixelRatioF());
+        printf("mainWindow->window() %p\n", mainWindow->window());
+        printf("canvas->window() %p\n", canvas->window());
+        printf("mainWindow->window()->devicePixelRatio() %lf\n", mainWindow->window()->devicePixelRatio());
+        printf("canvas->window()->devicePixelRatio() %lf\n", canvas->window()->devicePixelRatio());
+
     }
 };
 
@@ -72,31 +92,52 @@ static QPainter& activePainter() {
     return *activeLayer().painter;
 }
 
+static EggQtSize& activeSize() {
+    return eggQt->ctx->size;
+}
+
+static QPointF toCanvas(QPointF point) {
+    return activeSize().toCanvas(point);
+}
+
+static QPointF canvasMove(QPointF point, double dx, double dy) {
+    return activeSize().canvasMove(point, dx, dy);
+}
 void startUi(double fWidth, double fHeight) {
     eggQt = new EggQt(fWidth, fHeight);
-
-    activePainter().drawEllipse(1, 2, 5, 6);
-    activePainter().drawArc(QRectF(1, 1, 3, 3), 0, 360*16);
 }
 
 void movePen(double x, double y) {
     auto& layer = activeLayer();
-    layer.penCoord = QPointF(x, y);
+    layer.penCoord = toCanvas(QPointF(x, y));
 }
 
 void offsetPen(double dx, double dy) {
     auto& layer = activeLayer();
     QPointF oldCoord = layer.penCoord;
-    QPointF newCoord(oldCoord.x() + dx, oldCoord.y() + dy);
+    QPointF newCoord = canvasMove(oldCoord, dx, dy);
     layer.penCoord = newCoord;
 }
 
 void drawLine(double dx, double dy) {
     auto& layer = activeLayer();
     QPointF oldCoord = layer.penCoord;
-    QPointF newCoord(oldCoord.x() + dx, oldCoord.y() + dy);
+    QPointF newCoord = canvasMove(oldCoord, dx, dy);
     layer.painter->drawLine(oldCoord, newCoord);
     layer.penCoord = newCoord;
+}
+
+void drawString(char* pString) {
+    auto& layer = activeLayer();
+    QPointF coord = layer.penCoord;
+    layer.painter->drawText(coord, pString);
+}
+
+double getStringWidth(char* pString) {
+    auto& layer = activeLayer();
+    QPointF coord = layer.penCoord;
+    //layer.painter->boundingRect(coord, pString);
+    return 0.0;
 }
 
 void drawArc(double r, double dStart, double dSweep) {

@@ -23,9 +23,12 @@
 
 namespace eggqt {
 
-EggQtCanvas::EggQtCanvas(DrawingContext* ctx)
-    : ctx(ctx) {
+EggQtCanvas::EggQtCanvas() : ctx(nullptr) {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+}
+
+void EggQtCanvas::setDrawingContext(DrawingContext* ctx) {
+    this->ctx = ctx;
 }
 
 void EggQtCanvas::paintEvent(QPaintEvent *event) {
@@ -35,15 +38,38 @@ void EggQtCanvas::paintEvent(QPaintEvent *event) {
     QPen blackPen(QColor::fromRgb(0, 0, 0), 0.05);
 
     QPainter painter(this);
-    painter.fillRect(0, 0, ctx->size.width, ctx->size.height, whiteBrush);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
     for (auto &layer : ctx->layers) {
-        painter.drawPixmap(0, 0, *layer.pixmap);
+        painter.drawPixmap(QPointF(0.0, 0.0), *layer.pixmap);
+        //layer.pixmap->save("layertmp.png");
+        printf("window()->devicePixelRatio(): %lf\n", window()->devicePixelRatio());
+        printf("layer.pixmap->devicePixelRatio(): %lf\n", layer.pixmap->devicePixelRatio());
+        //assert(window()->devicePixelRatio() == layer.pixmap->devicePixelRatio());
+    }
+
+    {
+        auto painter = std::make_unique<QPainter>(this);
+        painter->setRenderHint(QPainter::Antialiasing);
+
+        QPen defaultPen(DEFAULT_PEN_COLOR);
+        defaultPen.setWidthF(ctx->size.scaleLen(0.05));
+        defaultPen.setStyle(Qt::PenStyle::SolidLine);
+        painter->setPen(QPen(defaultPen));
+
+        QFont defaultFont;
+        defaultFont.setPointSizeF(DEFAULT_FONT_POINT_SIZE);
+        defaultFont.setStyle(QFont::StyleNormal);
+        defaultFont.setWeight(QFont::Normal);
+        painter->setFont(defaultFont);
+
+        painter->drawText(100, 100, "Hello 世界");
     }
 }
 
 QSize EggQtCanvas::sizeHint() const {
-    return QSize(ctx->size.width, ctx->size.height);
+    return ctx->size.isize;
 }
 
 } // namespace eggqt

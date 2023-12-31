@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QPixmap>
+#include <QPicture>
 #include <QPainter>
 
 #include "eggqt_aux.hpp"

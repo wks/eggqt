@@ -5,19 +5,24 @@
 namespace eggqt {
 
 EggQtLayer::EggQtLayer(const EggQtSize& size, double dpr) : penCoord(0.0, 0.0) {
-    pixmap = std::make_unique<QPixmap>(size.width * dpr, size.height * dpr);
+    pixmap = std::make_unique<QPixmap>(size.isize.width() * dpr, size.isize.height() * dpr);
     pixmap->setDevicePixelRatio(dpr);
     printf("Pixmap: DPR = %lf\n", pixmap->devicePixelRatio());
+    // pixmap = std::make_unique<QPicture>();
 
     painter = std::make_unique<QPainter>(pixmap.get());
-    painter->translate(0.0, double(size.height));
-    painter->scale(double(PIXELS_PER_CM), -double(PIXELS_PER_CM));
     painter->setRenderHint(QPainter::Antialiasing);
 
     QPen defaultPen(DEFAULT_PEN_COLOR);
-    defaultPen.setWidthF(0.05);
+    defaultPen.setWidthF(size.scaleLen(0.05));
     defaultPen.setStyle(Qt::PenStyle::SolidLine);
     painter->setPen(QPen(defaultPen));
+
+    QFont defaultFont;
+    defaultFont.setPointSizeF(DEFAULT_FONT_POINT_SIZE);
+    defaultFont.setStyle(QFont::StyleNormal);
+    defaultFont.setWeight(QFont::Normal);
+    painter->setFont(defaultFont);
 }
 
 }

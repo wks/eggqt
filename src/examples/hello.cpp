@@ -28,6 +28,9 @@ int main() {
     DrawLine(0, -2);
 
     DrawArc(2, 0, 90);
+    MovePen(4, 5);
+    char text[] = "Hello 世界";
+    DrawString(text);
 
     printf("Close the window to exit.\n");
 

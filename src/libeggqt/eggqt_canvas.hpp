@@ -26,7 +26,9 @@ namespace eggqt {
 class EggQtCanvas : public QWidget {
     Q_OBJECT
 public:
-    EggQtCanvas(DrawingContext* ctx);
+    EggQtCanvas();
+    void setDrawingContext(DrawingContext* ctx);
+
     void paintEvent(QPaintEvent *event) override;
     QSize sizeHint() const override;
 private:
