@@ -22,7 +22,6 @@
 #include "eggqt_aux.hpp"
 #include "eggqt_layer.hpp"
 
-
 namespace eggqt {
 
 class DrawingContext {
@@ -33,7 +32,13 @@ public:
     DrawingContext(EggQtSize size);
 };
 
-void start_ui(double fWidth, double fHeight);
-void wait_for_exit();
+void startUi(double fWidth, double fHeight);
+void movePen(double x, double y);
+void offsetPen(double dx, double dy);
+void drawLine(double dx, double dy);
+void drawArc(double r, double dStart, double dSweep);
+void DrawEllipticalArc(double rx, double ry, double dStart, double dSweep);
+
+void waitForExit();
 
 } // namespace eggqt

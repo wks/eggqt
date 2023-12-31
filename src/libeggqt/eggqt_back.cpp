@@ -64,13 +64,58 @@ struct EggQt {
 
 static EggQt* eggQt;
 
-void start_ui(double fWidth, double fHeight) {
-    eggQt = new EggQt(fWidth, fHeight);
-
-    eggQt->ctx->activeLayer->painter->drawEllipse(1, 2, 5, 6);
+static EggQtLayer& activeLayer() {
+    return *eggQt->ctx->activeLayer;
 }
 
-void wait_for_exit() {
+static QPainter& activePainter() {
+    return *activeLayer().painter;
+}
+
+void startUi(double fWidth, double fHeight) {
+    eggQt = new EggQt(fWidth, fHeight);
+
+    activePainter().drawEllipse(1, 2, 5, 6);
+    activePainter().drawArc(QRectF(1, 1, 3, 3), 0, 360*16);
+}
+
+void movePen(double x, double y) {
+    auto& layer = activeLayer();
+    layer.penCoord = QPointF(x, y);
+}
+
+void offsetPen(double dx, double dy) {
+    auto& layer = activeLayer();
+    QPointF oldCoord = layer.penCoord;
+    QPointF newCoord(oldCoord.x() + dx, oldCoord.y() + dy);
+    layer.penCoord = newCoord;
+}
+
+void drawLine(double dx, double dy) {
+    auto& layer = activeLayer();
+    QPointF oldCoord = layer.penCoord;
+    QPointF newCoord(oldCoord.x() + dx, oldCoord.y() + dy);
+    layer.painter->drawLine(oldCoord, newCoord);
+    layer.penCoord = newCoord;
+}
+
+void drawArc(double r, double dStart, double dSweep) {
+    auto& layer = activeLayer();
+    QPointF center = layer.penCoord;
+    QPointF topLeft(center.x() - r / 2, center.y() - r / 2);
+    QRectF arcRect(topLeft, QSizeF(r, r));
+    printf("arcRect: %lf %lf %lf %lf\n", arcRect.left(), arcRect.top(), arcRect.right(), arcRect.bottom());
+    int startAngle = dStart * 16;
+    int spanAngle = dSweep * 16;
+    printf("Angles: %d %d\n", startAngle, spanAngle);
+    layer.painter->drawArc(arcRect, startAngle, spanAngle);
+}
+
+void drawEllipticalArc(double rx, double ry, double dStart, double dSweep) {
+
+}
+
+void waitForExit() {
     assert(eggQt != nullptr);
     eggQt->app->exec();
 }

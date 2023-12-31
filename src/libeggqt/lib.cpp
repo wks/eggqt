@@ -24,9 +24,28 @@
 void EggStart(double fWidth, double fHeight) {
     printf("Egg is about to start. fWidth: %lf, fHeight: %lf\n", fWidth, fHeight);
 
-    eggqt::start_ui(fWidth, fHeight);
+    eggqt::startUi(fWidth, fHeight);
+}
+
+void MovePen(double x, double y) {
+    eggqt::movePen(x, y);
+}
+
+void OffsetPen(double dx, double dy) {
+    eggqt::offsetPen(dx, dy);
+}
+
+void DrawLine(double dx, double dy) {
+    eggqt::drawLine(dx, dy);
+}
+void DrawArc(double r, double dStart, double dSweep) {
+    eggqt::drawArc(r, dStart, dSweep);
+}
+
+void DrawEllipticalArc(double rx, double ry, double dStart, double dSweep) {
+
 }
 
 void WaitForExit() {
-    eggqt::wait_for_exit();
+    eggqt::waitForExit();
 }

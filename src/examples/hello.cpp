@@ -22,6 +22,13 @@
 int main() {
     EggStart(16.0, 12.0);
 
+    MovePen(1, 1);
+    DrawLine(0, 2);
+    OffsetPen(1, 0);
+    DrawLine(0, -2);
+
+    DrawArc(2, 0, 90);
+
     printf("Close the window to exit.\n");
 
     WaitForExit();
