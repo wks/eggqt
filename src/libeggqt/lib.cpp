@@ -52,7 +52,7 @@ void DrawArc(double r, double dStart, double dSweep) {
 }
 
 void DrawEllipticalArc(double rx, double ry, double dStart, double dSweep) {
-
+    eggqt::drawEllipticalArc(rx, ry, dStart, dSweep);
 }
 
 void WaitForExit() {

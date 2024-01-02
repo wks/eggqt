@@ -48,6 +48,12 @@ int main() {
     DrawArc(4.0, -90.0, 60.0);
     DrawArc(5.0, -60.0, 30.0);
 
+    DrawEllipticalArc(5.0, 3.0, 0.0, 360.0);
+
+    MovePen(12.0, 3.0);
+    DrawEllipticalArc(3.0, 2.0, 0.0, 360.0);
+    DrawEllipticalArc(3.5, 2.5, 270.0, 270.0);
+
     printf("Close the window to exit.\n");
 
     WaitForExit();

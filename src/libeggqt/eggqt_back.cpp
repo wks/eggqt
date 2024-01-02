@@ -162,8 +162,8 @@ void drawArc(double r, double dStart, double dSweep) {
 
     double rCanvas = size.toCanvas(r);
     QPointF center = size.toCanvas(layer.penCoord);
-    QPointF topLeft(center.x() - rCanvas / 2, center.y() - rCanvas / 2);
-    QRectF arcRect(topLeft, QSizeF(rCanvas, rCanvas));
+    QPointF topLeft(center.x() - rCanvas, center.y() - rCanvas);
+    QRectF arcRect(topLeft, QSizeF(rCanvas * 2.0, rCanvas * 2.0));
     printf("arcRect: %lf %lf %lf %lf\n", arcRect.left(), arcRect.top(), arcRect.right(), arcRect.bottom());
 
     int startAngle = dStart * 16;
@@ -174,6 +174,21 @@ void drawArc(double r, double dStart, double dSweep) {
 }
 
 void drawEllipticalArc(double rx, double ry, double dStart, double dSweep) {
+    auto& layer = activeLayer();
+    auto& size = activeSize();
+
+    double rxCanvas = size.toCanvas(rx);
+    double ryCanvas = size.toCanvas(ry);
+    QPointF center = size.toCanvas(layer.penCoord);
+    QPointF topLeft(center.x() - rxCanvas, center.y() - ryCanvas);
+    QRectF arcRect(topLeft, QSizeF(rxCanvas * 2.0, ryCanvas * 2.0));
+    printf("ellipticalArcRect: %lf %lf %lf %lf\n", arcRect.left(), arcRect.top(), arcRect.right(), arcRect.bottom());
+
+    int startAngle = dStart * 16;
+    int spanAngle = dSweep * 16;
+    printf("Angles: %d %d\n", startAngle, spanAngle);
+
+    layer.painter->drawArc(arcRect, startAngle, spanAngle);
 
 }
 

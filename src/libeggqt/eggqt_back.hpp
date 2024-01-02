@@ -40,7 +40,7 @@ void drawLine(double dx, double dy);
 void drawString(char* pString);
 double getStringWidth(char* pString);
 void drawArc(double r, double dStart, double dSweep);
-void DrawEllipticalArc(double rx, double ry, double dStart, double dSweep);
+void drawEllipticalArc(double rx, double ry, double dStart, double dSweep);
 
 void waitForExit();
 
