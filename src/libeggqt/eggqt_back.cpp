@@ -127,17 +127,27 @@ void drawLine(double dx, double dy) {
     layer.penCoord = newCoord;
 }
 
+static QTextOption getDefaultTextOption() {
+    QTextOption option;
+    option.setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    option.setWrapMode(QTextOption::NoWrap);
+    return option;
+}
+
 void drawString(char* pString) {
     auto& layer = activeLayer();
     QPointF coord = layer.penCoord;
-    layer.painter->drawText(coord, pString);
+    QRectF smallRect = QRectF(coord, QSizeF(0, 0));
+    QRectF boundingRect = layer.painter->boundingRect(smallRect, pString, getDefaultTextOption());
+    layer.painter->drawText(boundingRect, pString, getDefaultTextOption());
 }
 
 double getStringWidth(char* pString) {
     auto& layer = activeLayer();
     QPointF coord = layer.penCoord;
-    //layer.painter->boundingRect(coord, pString);
-    return 0.0;
+    QRectF smallRect = QRectF(coord, QSize(0, 0));
+    QRectF boundingRect = layer.painter->boundingRect(smallRect, pString, getDefaultTextOption());
+    return activeSize().fromCanvas(boundingRect.width());
 }
 
 void drawArc(double r, double dStart, double dSweep) {

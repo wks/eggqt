@@ -14,7 +14,7 @@ EggQtLayer::EggQtLayer(const EggQtSize& size, double dpr) : penCoord(0.0, 0.0) {
     painter->setRenderHint(QPainter::Antialiasing);
 
     QPen defaultPen(DEFAULT_PEN_COLOR);
-    defaultPen.setWidthF(size.scaleLen(0.05));
+    defaultPen.setWidthF(size.toCanvas(0.05));
     defaultPen.setStyle(Qt::PenStyle::SolidLine);
     painter->setPen(QPen(defaultPen));
 

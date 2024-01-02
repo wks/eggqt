@@ -54,7 +54,7 @@ void EggQtCanvas::paintEvent(QPaintEvent *event) {
         painter->setRenderHint(QPainter::Antialiasing);
 
         QPen defaultPen(DEFAULT_PEN_COLOR);
-        defaultPen.setWidthF(ctx->size.scaleLen(0.05));
+        defaultPen.setWidthF(ctx->size.toCanvas(0.05));
         defaultPen.setStyle(Qt::PenStyle::SolidLine);
         painter->setPen(QPen(defaultPen));
 

@@ -23,8 +23,12 @@ struct EggQtSize {
         };
     }
 
-    double scaleLen(double sz) const {
-        return scale * sz;
+    double toCanvas(double sz) const {
+        return sz * scale;
+    }
+
+    double fromCanvas(double sz) const {
+        return sz / scale;
     }
 
     QPointF toCanvas(QPointF point) const {
@@ -42,5 +46,7 @@ struct EggQtSize {
     QRectF rectWholeF() const {
         return QRectF(QPointF(0.0, 0.0), isize);
     }
+
+
 };
 }

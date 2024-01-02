@@ -28,9 +28,13 @@ int main() {
     DrawLine(0, -2);
 
     DrawArc(2, 0, 90);
+
     MovePen(4, 5);
     char text[] = "Hello 世界";
     DrawString(text);
+    double width = GetStringWidth(text);
+    printf("Width is %lf\n", width);
+    DrawLine(width, 0);
 
     printf("Close the window to exit.\n");
 
