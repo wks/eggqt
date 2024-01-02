@@ -12,6 +12,7 @@ class EggQtLayer {
 public:
     std::unique_ptr<QPixmap> pixmap;
     std::unique_ptr<QPainter> painter;
+    /** Pen coordinate, in centimeters. */
     QPointF penCoord;
 
     EggQtLayer(const EggQtSize& size, double dpr);

@@ -36,6 +36,18 @@ int main() {
     printf("Width is %lf\n", width);
     DrawLine(width, 0);
 
+    MovePen(4, 7);
+    char text2[] = "天地不仁，以万物为刍狗；圣人不仁，以百姓为刍狗。";
+    DrawString(text2);
+    double width2 = GetStringWidth(text2);
+    printf("Width2 is %lf\n", width2);
+    DrawLine(width2, 0);
+
+    MovePen(0.0, 12.0);
+    DrawArc(3.0, 0.0, 360.0);
+    DrawArc(4.0, -90.0, 60.0);
+    DrawArc(5.0, -60.0, 30.0);
+
     printf("Close the window to exit.\n");
 
     WaitForExit();

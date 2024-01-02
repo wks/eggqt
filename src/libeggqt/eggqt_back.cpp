@@ -96,6 +96,14 @@ static EggQtSize& activeSize() {
     return eggQt->ctx->size;
 }
 
+static double toCanvas(double sz) {
+    return activeSize().toCanvas(sz);
+}
+
+static double fromCanvas(double sz) {
+    return activeSize().fromCanvas(sz);
+}
+
 static QPointF toCanvas(QPointF point) {
     return activeSize().toCanvas(point);
 }
@@ -109,21 +117,19 @@ void startUi(double fWidth, double fHeight) {
 
 void movePen(double x, double y) {
     auto& layer = activeLayer();
-    layer.penCoord = toCanvas(QPointF(x, y));
+    layer.penCoord = QPointF(x, y);
 }
 
 void offsetPen(double dx, double dy) {
     auto& layer = activeLayer();
-    QPointF oldCoord = layer.penCoord;
-    QPointF newCoord = canvasMove(oldCoord, dx, dy);
-    layer.penCoord = newCoord;
+    layer.penCoord += QPointF(dx, dy);
 }
 
 void drawLine(double dx, double dy) {
     auto& layer = activeLayer();
     QPointF oldCoord = layer.penCoord;
-    QPointF newCoord = canvasMove(oldCoord, dx, dy);
-    layer.painter->drawLine(oldCoord, newCoord);
+    QPointF newCoord = oldCoord + QPointF(dx, dy);
+    layer.painter->drawLine(toCanvas(oldCoord), toCanvas(newCoord));
     layer.penCoord = newCoord;
 }
 
@@ -136,29 +142,34 @@ static QTextOption getDefaultTextOption() {
 
 void drawString(char* pString) {
     auto& layer = activeLayer();
-    QPointF coord = layer.penCoord;
-    QRectF smallRect = QRectF(coord, QSizeF(0, 0));
+    QPointF topLeft = toCanvas(layer.penCoord);
+    QRectF smallRect = QRectF(topLeft, QSizeF(0, 0));
     QRectF boundingRect = layer.painter->boundingRect(smallRect, pString, getDefaultTextOption());
     layer.painter->drawText(boundingRect, pString, getDefaultTextOption());
 }
 
 double getStringWidth(char* pString) {
     auto& layer = activeLayer();
-    QPointF coord = layer.penCoord;
-    QRectF smallRect = QRectF(coord, QSize(0, 0));
+    QPointF topLeft = toCanvas(layer.penCoord);
+    QRectF smallRect = QRectF(topLeft, QSizeF(0, 0));
     QRectF boundingRect = layer.painter->boundingRect(smallRect, pString, getDefaultTextOption());
-    return activeSize().fromCanvas(boundingRect.width());
+    return fromCanvas(boundingRect.width());
 }
 
 void drawArc(double r, double dStart, double dSweep) {
     auto& layer = activeLayer();
-    QPointF center = layer.penCoord;
-    QPointF topLeft(center.x() - r / 2, center.y() - r / 2);
-    QRectF arcRect(topLeft, QSizeF(r, r));
+    auto& size = activeSize();
+
+    double rCanvas = size.toCanvas(r);
+    QPointF center = size.toCanvas(layer.penCoord);
+    QPointF topLeft(center.x() - rCanvas / 2, center.y() - rCanvas / 2);
+    QRectF arcRect(topLeft, QSizeF(rCanvas, rCanvas));
     printf("arcRect: %lf %lf %lf %lf\n", arcRect.left(), arcRect.top(), arcRect.right(), arcRect.bottom());
+
     int startAngle = dStart * 16;
     int spanAngle = dSweep * 16;
     printf("Angles: %d %d\n", startAngle, spanAngle);
+
     layer.painter->drawArc(arcRect, startAngle, spanAngle);
 }
 
