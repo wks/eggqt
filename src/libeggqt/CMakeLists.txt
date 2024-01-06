@@ -36,4 +36,6 @@ target_link_libraries(eggqt
     PRIVATE
     Qt6::Core
     Qt6::Widgets
+    Boost::coroutine
+    fmt::fmt
     )

@@ -26,3 +26,16 @@ target_include_directories(hello
 target_link_libraries(hello
     eggqt
     )
+
+add_executable(event_test
+    event_test.cpp
+    )
+
+target_include_directories(event_test
+    PRIVATE
+    ../include
+    )
+
+target_link_libraries(event_test
+    eggqt
+    )

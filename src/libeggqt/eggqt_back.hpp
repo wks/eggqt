@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <exception>
 #include <vector>
 
 #include "constants.hpp"
@@ -33,6 +34,23 @@ public:
     DrawingContext(EggQtSize size);
 };
 
+enum class EventKind {
+    Exit,
+    Timer,
+    MouseMove,
+    KeyDown,
+    KeyUp,
+};
+
+class NoEventException : public std::exception {
+};
+
+class WrongEventException : public std::exception {
+public:
+    size_t var;
+    WrongEventException(size_t var);
+};
+
 void startUi(double fWidth, double fHeight);
 void movePen(double x, double y);
 void offsetPen(double dx, double dy);
@@ -42,6 +60,11 @@ double getStringWidth(char* pString);
 void drawArc(double r, double dStart, double dSweep);
 void drawEllipticalArc(double rx, double ry, double dStart, double dSweep);
 
+EventKind waitForEvent();
 void waitForExit();
+bool isKeyDown(unsigned int uVKCode);
+unsigned int getStruckKey(void);
+double getMouseX();
+double getMouseY();
 
 } // namespace eggqt

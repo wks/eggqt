@@ -25,10 +25,27 @@ namespace eggqt {
 
 EggQtCanvas::EggQtCanvas() : ctx(nullptr) {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    setFocusPolicy(Qt::StrongFocus);
+    setMouseTracking(true);
 }
 
 void EggQtCanvas::setDrawingContext(DrawingContext* ctx) {
     this->ctx = ctx;
+}
+
+void EggQtCanvas::keyPressEvent(QKeyEvent *event) {
+    int ch = event->key();
+    onKeyEvent(ch, true);
+}
+
+void EggQtCanvas::keyReleaseEvent(QKeyEvent *event) {
+    int ch = event->key();
+    onKeyEvent(ch, false);
+}
+
+void EggQtCanvas::mouseMoveEvent(QMouseEvent *event) {
+    QPointF canvasPos = event->position();
+    onMouseMove(canvasPos);
 }
 
 void EggQtCanvas::paintEvent(QPaintEvent *event) {

@@ -35,6 +35,10 @@ struct EggQtSize {
         return QPointF(point.x() * scale, double(isize.height()) - point.y() * scale);
     }
 
+    QPointF fromCanvas(QPointF point) const {
+        return QPointF(point.x() / scale, (double(isize.height()) - point.y()) / scale);
+    }
+
     QPointF canvasMove(QPointF point, double dx, double dy) const {
         return QPointF(point.x() + dx * scale, point.y() - dy * scale);
     }

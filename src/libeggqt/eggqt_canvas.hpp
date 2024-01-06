@@ -16,6 +16,9 @@
 
 #pragma once
 
+#include <functional>
+
+#include <QMouseEvent>
 #include <QWidget>
 
 #include "eggqt_aux.hpp"
@@ -29,8 +32,17 @@ public:
     EggQtCanvas();
     void setDrawingContext(DrawingContext* ctx);
 
-    void paintEvent(QPaintEvent *event) override;
     QSize sizeHint() const override;
+
+    std::function<void(int key, bool down)> onKeyEvent;
+    std::function<void(QPointF canvasPos)> onMouseMove;
+
+protected:
+    virtual void keyPressEvent(QKeyEvent *event) override;
+    virtual void keyReleaseEvent(QKeyEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
+
 private:
     DrawingContext* ctx;
 };

@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QMainWindow>
 
 namespace eggqt {

@@ -17,13 +17,17 @@
 #include "eggqt_back.hpp"
 
 #include <mutex>
+#include <optional>
 #include <thread>
+#include <variant>
 #include <vector>
 
 #include <QApplication>
 #include <QMainWindow>
 #include <QGridLayout>
 #include <QPixmap>
+
+#include <boost/coroutine2/all.hpp>
 
 #include "constants.hpp"
 #include "eggqt_aux.hpp"
@@ -42,10 +46,33 @@ DrawingContext::DrawingContext(EggQtSize size) : size(size) {
     activeLayer->painter->fillRect(size.rectWhole(), DEFAULT_BACKGBROUND_COLOR);
 }
 
+WrongEventException::WrongEventException(size_t var) : var(var) {}
+
+enum class WaitKind {
+    Event,
+    Exit,
+};
+
+struct MouseEvent {
+    QPointF conceptualPos;
+};
+
+struct KeyEvent {
+    int key;
+    bool down;
+};
+
+using EventVariant = std::variant<KeyEvent, MouseEvent>;
+using EventCoroType = boost::coroutines2::coroutine<EventKind>;
+
 struct EggQt {
     std::unique_ptr<DrawingContext> ctx;
     std::unique_ptr<QApplication> app;
     std::unique_ptr<EggQtMainWindow> mainWindow;
+    std::optional<WaitKind> waitKind;
+    std::optional<EventVariant> lastEvent;
+    std::unique_ptr<EventCoroType::pull_type> eventCoro;
+    EventCoroType::push_type* eventCoroSink;
     EggQtCanvas* canvas;
 
     EggQt(double fWidth, double fHeight) {
@@ -58,6 +85,38 @@ struct EggQt {
 
         ctx = std::make_unique<DrawingContext>(size);
         canvas->setDrawingContext(ctx.get());
+
+        canvas->onKeyEvent = [this](int key, bool down) {
+            if (waitKind == WaitKind::Event) {
+                this->lastEvent = KeyEvent {
+                    .key = key,
+                    .down = down,
+                };
+                (*this->eventCoroSink)(down ? EventKind::KeyDown : EventKind::KeyUp);
+            }
+        };
+
+        canvas->onMouseMove = [this](QPointF canvasPos) {
+            if (waitKind == WaitKind::Event) {
+                this->lastEvent = MouseEvent {
+                    .conceptualPos = this->ctx->size.fromCanvas(canvasPos)
+                };
+                (*this->eventCoroSink)(EventKind::MouseMove);
+            }
+        };
+
+        eventCoro = std::make_unique<EventCoroType::pull_type>([this](EventCoroType::push_type& sink) {
+            printf("[EventCoro] Initial return.\n");
+            this->eventCoroSink = &sink;
+            sink(EventKind::Exit);
+            printf("[EventCoro] Calling this->app->exec()...\n");
+            this->app->exec();
+            printf("[EventCoro] back from this->app->exec().  Calling sink(EvnetKind::Exit)...\n");
+            sink(EventKind::Exit);
+            printf("[EventCoro] back from sink()\n");
+        });
+        assert(eventCoro->get() == EventKind::Exit);
+        assert(eventCoroSink != nullptr);
 
         printf("mainWindow->devicePixelRatio() %lf\n", mainWindow->devicePixelRatio());
         printf("mainWindow->devicePixelRatioF() %lf\n", mainWindow->devicePixelRatioF());
@@ -192,9 +251,67 @@ void drawEllipticalArc(double rx, double ry, double dStart, double dSweep) {
 
 }
 
-void waitForExit() {
+static EventKind waitGeneral(WaitKind kind) {
     assert(eggQt != nullptr);
-    eggQt->app->exec();
+    eggQt->waitKind = kind;
+
+    printf("Doing coroutine jump...\n");
+    (*eggQt->eventCoro)();
+    EventKind result = eggQt->eventCoro->get();
+    printf("Back from coroutine.\n");
+
+    eggQt->waitKind.reset();
+    return result;
+}
+
+EventKind waitForEvent() {
+    return waitGeneral(WaitKind::Event);
+}
+
+void waitForExit() {
+    EventKind kind = waitGeneral(WaitKind::Exit);
+    assert(kind == EventKind::Exit);
+}
+
+static EventVariant& getEvent() {
+    if (!eggQt->lastEvent.has_value()) {
+        throw NoEventException();
+    }
+    return eggQt->lastEvent.value();
+}
+
+static KeyEvent& getKeyEvent() {
+    auto& event = getEvent();
+    if (!std::holds_alternative<KeyEvent>(event)) {
+        throw WrongEventException(event.index());
+    }
+    return std::get<KeyEvent>(event);
+}
+
+static MouseEvent& getMouseEvent() {
+    auto& event = getEvent();
+    if (!std::holds_alternative<MouseEvent>(event)) {
+        throw WrongEventException(event.index());
+    }
+    return std::get<MouseEvent>(event);
+}
+
+bool isKeyDown(unsigned int uVKCode) {
+    return getKeyEvent().key == uVKCode;
+}
+
+unsigned int getStruckKey(void) {
+    return getKeyEvent().key;
+}
+
+double getMouseX() {
+    auto& mouseEvent = getMouseEvent();
+    return mouseEvent.conceptualPos.x();
+}
+
+double getMouseY() {
+    auto& mouseEvent = getMouseEvent();
+    return mouseEvent.conceptualPos.y();
 }
 
 } // namespace eggqt
