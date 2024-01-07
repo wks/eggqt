@@ -17,7 +17,7 @@
 #pragma once
 
 #include <exception>
-#include <vector>
+#include <list>
 
 #include "constants.hpp"
 #include "eggqt_aux.hpp"
@@ -28,10 +28,12 @@ namespace eggqt {
 class DrawingContext {
 public:
     EggQtSize size;
-    std::vector<EggQtLayer> layers;
+    std::list<EggQtLayer> layers;
     EggQtLayer* activeLayer;
     double devicePixelRatio;
     DrawingContext(EggQtSize size);
+    EggQtLayer& newLayer();
+    void setActive(EggQtLayer* layer);
 };
 
 enum class EventKind {
@@ -55,8 +57,8 @@ void startUi(double fWidth, double fHeight);
 void movePen(double x, double y);
 void offsetPen(double dx, double dy);
 void drawLine(double dx, double dy);
-void drawString(char* pString);
-double getStringWidth(char* pString);
+void drawString(const char* pString);
+double getStringWidth(const char* pString);
 void drawArc(double r, double dStart, double dSweep);
 void drawEllipticalArc(double rx, double ry, double dStart, double dSweep);
 
@@ -66,5 +68,10 @@ bool isKeyDown(unsigned int uVKCode);
 unsigned int getStruckKey(void);
 double getMouseX();
 double getMouseY();
+
+EggQtLayer* layEgg();
+void setActiveEgg(EggQtLayer* layer);
+void moveEgg(double x, double y);
+void offsetEgg(double dx, double dy);
 
 } // namespace eggqt

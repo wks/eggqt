@@ -42,8 +42,17 @@ static char argv0[] = "eggqt";
 static char *argv[] = {argv0, nullptr};
 
 DrawingContext::DrawingContext(EggQtSize size) : size(size) {
-    activeLayer = &layers.emplace_back(size, 20.0);
-    activeLayer->painter->fillRect(size.rectWhole(), DEFAULT_BACKGBROUND_COLOR);
+    EggQtLayer& layer = newLayer();
+    setActive(&layer);
+    layer.painter->fillRect(size.rectWhole(), DEFAULT_BACKGBROUND_COLOR);
+}
+
+EggQtLayer& DrawingContext::newLayer() {
+    return layers.emplace_back(size, 20.0);
+}
+
+void DrawingContext::setActive(EggQtLayer* layer) {
+    activeLayer = layer;
 }
 
 WrongEventException::WrongEventException(size_t var) : var(var) {}
@@ -174,6 +183,10 @@ void startUi(double fWidth, double fHeight) {
     eggQt = new EggQt(fWidth, fHeight);
 }
 
+static void updateUI() {
+    eggQt->canvas->update();
+}
+
 void movePen(double x, double y) {
     auto& layer = activeLayer();
     layer.penCoord = QPointF(x, y);
@@ -190,6 +203,7 @@ void drawLine(double dx, double dy) {
     QPointF newCoord = oldCoord + QPointF(dx, dy);
     layer.painter->drawLine(toCanvas(oldCoord), toCanvas(newCoord));
     layer.penCoord = newCoord;
+    updateUI();
 }
 
 static QTextOption getDefaultTextOption() {
@@ -199,15 +213,16 @@ static QTextOption getDefaultTextOption() {
     return option;
 }
 
-void drawString(char* pString) {
+void drawString(const char* pString) {
     auto& layer = activeLayer();
     QPointF topLeft = toCanvas(layer.penCoord);
     QRectF smallRect = QRectF(topLeft, QSizeF(0, 0));
     QRectF boundingRect = layer.painter->boundingRect(smallRect, pString, getDefaultTextOption());
     layer.painter->drawText(boundingRect, pString, getDefaultTextOption());
+    updateUI();
 }
 
-double getStringWidth(char* pString) {
+double getStringWidth(const char* pString) {
     auto& layer = activeLayer();
     QPointF topLeft = toCanvas(layer.penCoord);
     QRectF smallRect = QRectF(topLeft, QSizeF(0, 0));
@@ -230,6 +245,7 @@ void drawArc(double r, double dStart, double dSweep) {
     printf("Angles: %d %d\n", startAngle, spanAngle);
 
     layer.painter->drawArc(arcRect, startAngle, spanAngle);
+    updateUI();
 }
 
 void drawEllipticalArc(double rx, double ry, double dStart, double dSweep) {
@@ -248,7 +264,7 @@ void drawEllipticalArc(double rx, double ry, double dStart, double dSweep) {
     printf("Angles: %d %d\n", startAngle, spanAngle);
 
     layer.painter->drawArc(arcRect, startAngle, spanAngle);
-
+    updateUI();
 }
 
 static EventKind waitGeneral(WaitKind kind) {
@@ -313,5 +329,28 @@ double getMouseY() {
     auto& mouseEvent = getMouseEvent();
     return mouseEvent.conceptualPos.y();
 }
+
+EggQtLayer* layEgg() {
+    EggQtLayer& layer = eggQt->ctx->newLayer();
+    eggQt->ctx->setActive(&layer);
+    return &layer;
+}
+
+void setActiveEgg(EggQtLayer* layer) {
+    eggQt->ctx->setActive(layer);
+}
+
+void moveEgg(double x, double y) {
+    activeLayer().anchor = QPointF(x, y);
+    printf("Layer: %p, anchor is now %lf %lf\n", &activeLayer(), activeLayer().anchor.x(), activeLayer().anchor.y());
+    updateUI();
+}
+
+void offsetEgg(double dx, double dy) {
+    activeLayer().anchor += QPointF(dx, dy);
+    printf("Layer: %p, anchor is now %lf %lf\n", &activeLayer(), activeLayer().anchor.x(), activeLayer().anchor.y());
+    updateUI();
+}
+
 
 } // namespace eggqt

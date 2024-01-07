@@ -189,7 +189,8 @@ void DrawLine(double dx, double dy);
  *
  * @param pString 被绘制的字符串，以'\\0'为结束符
  */
-void DrawString(char* pString);
+// [wks]: 原始版本Egg的参数类型是char*，没有const，致使字符串常量无法直接使用。这里予以修正。
+void DrawString(const char* pString);
 
 /**
  * 得到字符串宽度
@@ -200,7 +201,8 @@ void DrawString(char* pString);
  * @return 宽度（厘米）
  * @see DrawString()
  */
-double GetStringWidth(char* pString);
+// [wks]: 原始版本Egg的参数类型是char*，没有const，致使字符串常量无法直接使用。这里予以修正。
+double GetStringWidth(const char* pString);
 
 /**
  * 画曲线

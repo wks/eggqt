@@ -54,8 +54,8 @@ int main() {
                 break;
             }
             case KEYDOWN: {
-                char ch = GetStruckKey();
-                printf("KEYDOWN: %d %c\n", ch, ch);
+                unsigned int ch = GetStruckKey();
+                printf("KEYDOWN: %d %c\n", ch, (char)ch);
                 break;
             }
             case KEYUP: {

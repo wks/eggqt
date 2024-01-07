@@ -39,11 +39,11 @@ void DrawLine(double dx, double dy) {
     eggqt::drawLine(dx, dy);
 }
 
-void DrawString(char* pString) {
+void DrawString(const char* pString) {
     eggqt::drawString(pString);
 }
 
-double GetStringWidth(char* pString) {
+double GetStringWidth(const char* pString) {
     return eggqt::getStringWidth(pString);
 }
 
@@ -128,4 +128,20 @@ double GetMouseY(void) try {
 } catch (const eggqt::WrongEventException& e) {
     fmt::print(stderr, "事件不对。需要鼠标事件。等到了 {} 。\n", eventKindName(e.var));
     abort();
+}
+
+HEGG LayEgg(void) {
+    return reinterpret_cast<HEGG>(eggqt::layEgg());
+}
+
+void SetActiveEgg(HEGG hEgg) {
+    eggqt::setActiveEgg(reinterpret_cast<eggqt::EggQtLayer*>(hEgg));
+}
+
+void MoveEgg(double x, double y) {
+    eggqt::moveEgg(x, y);
+}
+
+void OffsetEgg(double dx, double dy) {
+    eggqt::offsetEgg(dx, dy);
 }

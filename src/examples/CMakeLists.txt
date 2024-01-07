@@ -39,3 +39,16 @@ target_include_directories(event_test
 target_link_libraries(event_test
     eggqt
     )
+
+add_executable(layer_test
+    layer_test.cpp
+    )
+
+target_include_directories(layer_test
+    PRIVATE
+    ../include
+    )
+
+target_link_libraries(layer_test
+    eggqt
+    )
