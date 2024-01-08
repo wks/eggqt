@@ -50,8 +50,14 @@ class NoEventException : public std::exception {
 
 class WrongEventException : public std::exception {
 public:
+    EventKind kind;
+    WrongEventException(EventKind kind);
+};
+
+class WrongVariantException : public std::exception {
+public:
     size_t var;
-    WrongEventException(size_t var);
+    WrongVariantException(size_t var);
 };
 
 void startUi(double fWidth, double fHeight);
@@ -74,6 +80,12 @@ EggQtLayer* layEgg();
 void setActiveEgg(EggQtLayer* layer);
 void moveEgg(double x, double y);
 void offsetEgg(double dx, double dy);
+
+void startTimer(unsigned int uMillisecond);
+
+void stopTimer(void);
+
+bool waitFor(unsigned int uMillisecond);
 
 void setPen(unsigned long color, double fWidth);
 void setPenColor(unsigned long color);

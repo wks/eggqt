@@ -95,7 +95,7 @@ BOOL IsKeyDown(unsigned int uVKCode) try {
 } catch (const eggqt::NoEventException& e) {
     fmt::print(stderr, "事件还没发生！");
     abort();
-} catch (const eggqt::WrongEventException& e) {
+} catch (const eggqt::WrongVariantException& e) {
     fmt::print(stderr, "事件不对。需要键盘事件。等到了 {} 。\n", eventKindName(e.var));
     abort();
 }
@@ -105,7 +105,7 @@ unsigned int GetStruckKey(void) try {
 } catch (const eggqt::NoEventException& e) {
     fmt::print(stderr, "事件还没发生！");
     abort();
-} catch (const eggqt::WrongEventException& e) {
+} catch (const eggqt::WrongVariantException& e) {
     fmt::print(stderr, "事件不对。需要键盘事件。等到了 {} 。\n", eventKindName(e.var));
     abort();
 }
@@ -115,7 +115,7 @@ double GetMouseX(void) try {
 } catch (const eggqt::NoEventException& e) {
     fmt::print(stderr, "事件还没发生！");
     abort();
-} catch (const eggqt::WrongEventException& e) {
+} catch (const eggqt::WrongVariantException& e) {
     fmt::print(stderr, "事件不对。需要鼠标事件。等到了 {} 。\n", eventKindName(e.var));
     abort();
 }
@@ -125,7 +125,7 @@ double GetMouseY(void) try {
 } catch (const eggqt::NoEventException& e) {
     fmt::print(stderr, "事件还没发生！");
     abort();
-} catch (const eggqt::WrongEventException& e) {
+} catch (const eggqt::WrongVariantException& e) {
     fmt::print(stderr, "事件不对。需要鼠标事件。等到了 {} 。\n", eventKindName(e.var));
     abort();
 }
@@ -144,6 +144,18 @@ void MoveEgg(double x, double y) {
 
 void OffsetEgg(double dx, double dy) {
     eggqt::offsetEgg(dx, dy);
+}
+
+void StartTimer(unsigned int uMillisecond) {
+    eggqt::startTimer(uMillisecond);
+}
+
+void StopTimer(void) {
+    eggqt::stopTimer();
+}
+
+BOOL WaitFor(unsigned int uMillisecond) {
+    return eggqt::waitFor(uMillisecond);
 }
 
 void SetPen(unsigned long color, double fWidth) {

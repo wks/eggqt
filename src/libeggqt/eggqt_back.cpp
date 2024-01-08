@@ -26,6 +26,7 @@
 #include <QMainWindow>
 #include <QGridLayout>
 #include <QPixmap>
+#include <QTimer>
 
 #include <boost/coroutine2/all.hpp>
 
@@ -60,10 +61,12 @@ void DrawingContext::setActive(EggQtLayer* layer) {
     activeLayer = layer;
 }
 
-WrongEventException::WrongEventException(size_t var) : var(var) {}
+WrongEventException::WrongEventException(EventKind kind) : kind(kind) {}
+WrongVariantException::WrongVariantException(size_t var) : var(var) {}
 
 enum class WaitKind {
     Event,
+    Timer,
     Exit,
 };
 
@@ -83,11 +86,12 @@ struct EggQt {
     std::unique_ptr<DrawingContext> ctx;
     std::unique_ptr<QApplication> app;
     std::unique_ptr<EggQtMainWindow> mainWindow;
+    EggQtCanvas* canvas;
+    QTimer* timer;
     std::optional<WaitKind> waitKind;
     std::optional<EventVariant> lastEvent;
     std::unique_ptr<EventCoroType::pull_type> eventCoro;
     EventCoroType::push_type* eventCoroSink;
-    EggQtCanvas* canvas;
 
     EggQt(double fWidth, double fHeight) {
         EggQtSize size = EggQtSize::fromSizeScaled(fWidth, fHeight, PIXELS_PER_CM);
@@ -119,6 +123,15 @@ struct EggQt {
             }
         };
 
+        timer = new QTimer(mainWindow.get());
+        timer->setSingleShot(false);
+        QObject::connect(timer, &QTimer::timeout, [this]() {
+            if (waitKind == WaitKind::Event || waitKind == WaitKind::Timer) {
+                this->lastEvent.reset();
+                (*this->eventCoroSink)(EventKind::Timer);
+            }
+        });
+
         eventCoro = std::make_unique<EventCoroType::pull_type>([this](EventCoroType::push_type& sink) {
             printf("[EventCoro] Initial return.\n");
             this->eventCoroSink = &sink;
@@ -126,6 +139,7 @@ struct EggQt {
             printf("[EventCoro] Calling this->app->exec()...\n");
             this->app->exec();
             printf("[EventCoro] back from this->app->exec().  Calling sink(EvnetKind::Exit)...\n");
+            this->lastEvent.reset();
             sink(EventKind::Exit);
             printf("[EventCoro] back from sink()\n");
         });
@@ -305,7 +319,7 @@ static EventVariant& getEvent() {
 static KeyEvent& getKeyEvent() {
     auto& event = getEvent();
     if (!std::holds_alternative<KeyEvent>(event)) {
-        throw WrongEventException(event.index());
+        throw WrongVariantException(event.index());
     }
     return std::get<KeyEvent>(event);
 }
@@ -313,7 +327,7 @@ static KeyEvent& getKeyEvent() {
 static MouseEvent& getMouseEvent() {
     auto& event = getEvent();
     if (!std::holds_alternative<MouseEvent>(event)) {
-        throw WrongEventException(event.index());
+        throw WrongVariantException(event.index());
     }
     return std::get<MouseEvent>(event);
 }
@@ -358,10 +372,34 @@ void offsetEgg(double dx, double dy) {
     updateUI();
 }
 
+void startTimer(unsigned int uMillisecond) {
+    eggQt->timer->start(uMillisecond);
+}
+
+void stopTimer(void) {
+    eggQt->timer->stop();
+}
+
+bool waitFor(unsigned int uMillisecond) {
+    startTimer(uMillisecond);
+    EventKind kind = waitGeneral(WaitKind::Timer);
+    switch (kind) {
+        case EventKind::Exit: {
+            return false;
+        }
+        case EventKind::Timer: {
+            return true;
+        }
+        default: {
+            throw WrongEventException(kind);
+        }
+    }
+}
+
 QColor toQColor(unsigned long color) {
-    unsigned long r = (color >> 16) & 0xff;
+    unsigned long r = color & 0xff;
     unsigned long g = (color >> 8) & 0xff;
-    unsigned long b = color & 0xff;
+    unsigned long b = (color >> 16) & 0xff;
 
     return QColor(qRgb(r, g, b));
 }

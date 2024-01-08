@@ -52,3 +52,16 @@ target_include_directories(layer_test
 target_link_libraries(layer_test
     eggqt
     )
+
+add_executable(timer_test
+    timer_test.cpp
+    )
+
+target_include_directories(timer_test
+    PRIVATE
+    ../include
+    )
+
+target_link_libraries(timer_test
+    eggqt
+    )
