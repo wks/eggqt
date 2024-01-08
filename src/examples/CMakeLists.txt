@@ -14,54 +14,26 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-add_executable(hello
-    hello.cpp
+project(eggqt-examples VERSION 1.0.0 LANGUAGES C)
+
+set(SIMPLE_EXAMPLES
+    hello
+    event_test
+    layer_test
+    timer_test
     )
 
-target_include_directories(hello
-    PRIVATE
-    ../include
-    )
+foreach(tgt IN LISTS SIMPLE_EXAMPLES)
+    add_executable(${tgt}
+        ${tgt}.c
+        )
 
-target_link_libraries(hello
-    eggqt
-    )
+    target_include_directories(${tgt}
+        PRIVATE
+        ../include
+        )
 
-add_executable(event_test
-    event_test.cpp
-    )
-
-target_include_directories(event_test
-    PRIVATE
-    ../include
-    )
-
-target_link_libraries(event_test
-    eggqt
-    )
-
-add_executable(layer_test
-    layer_test.cpp
-    )
-
-target_include_directories(layer_test
-    PRIVATE
-    ../include
-    )
-
-target_link_libraries(layer_test
-    eggqt
-    )
-
-add_executable(timer_test
-    timer_test.cpp
-    )
-
-target_include_directories(timer_test
-    PRIVATE
-    ../include
-    )
-
-target_link_libraries(timer_test
-    eggqt
-    )
+    target_link_libraries(${tgt}
+        eggqt
+        )
+endforeach()

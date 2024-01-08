@@ -14,6 +14,12 @@
 #ifndef _EGG_SUNNER_HIT     //防止多次包含egg.h，造成冲突
 #define _EGG_SUNNER_HIT
 
+// [wks] 我们用C++实现这个库，但必须要能和C用户程序链接起来。
+// 我猜sunner的原版Egg就是用纯C语言实现的。
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // [wks] 不。不使用Win32 API！
 // #include <windows.h>		//使用Win32 API
 
@@ -485,5 +491,9 @@ void SetPenColor(unsigned long color);
 void SetPenWidth(double fWidth);
 
 //! @}
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //_EGG_SUNNER_HIT
