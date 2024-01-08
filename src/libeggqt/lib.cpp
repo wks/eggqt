@@ -145,3 +145,15 @@ void MoveEgg(double x, double y) {
 void OffsetEgg(double dx, double dy) {
     eggqt::offsetEgg(dx, dy);
 }
+
+void SetPen(unsigned long color, double fWidth) {
+    eggqt::setPen(color, fWidth);
+}
+
+void SetPenColor(unsigned long color) {
+    eggqt::setPenColor(color);
+}
+
+void SetPenWidth(double fWidth) {
+    eggqt::setPenWidth(fWidth);
+}

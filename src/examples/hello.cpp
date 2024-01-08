@@ -44,14 +44,20 @@ int main() {
     DrawLine(width2, 0);
 
     MovePen(0.0, 12.0);
+    SetPen(DARK_RED, 0.1);
     DrawArc(3.0, 0.0, 360.0);
+    SetPen(DARK_GREEN, 0.2);
     DrawArc(4.0, -90.0, 60.0);
+    SetPen(BLUE, 0.3);
     DrawArc(5.0, -60.0, 30.0);
 
+    SetPenColor(MAGENTA);
     DrawEllipticalArc(5.0, 3.0, 0.0, 360.0);
 
     MovePen(12.0, 3.0);
+    SetPenWidth(0.1);
     DrawEllipticalArc(3.0, 2.0, 0.0, 360.0);
+    SetPenWidth(0.3);
     DrawEllipticalArc(3.5, 2.5, 270.0, 270.0);
 
     printf("Close the window to exit.\n");

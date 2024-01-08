@@ -18,7 +18,7 @@ public:
     /** Pen coordinate, in centimeters. */
     QPointF penCoord;
 
-    EggQtLayer(const EggQtSize& size, double dpr);
+    EggQtLayer(const EggQtSize& size, double dpr, QPen& pen);
     EggQtLayer(const EggQtLayer& other) = delete;
 };
 

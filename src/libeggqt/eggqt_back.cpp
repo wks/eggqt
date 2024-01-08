@@ -42,13 +42,18 @@ static char argv0[] = "eggqt";
 static char *argv[] = {argv0, nullptr};
 
 DrawingContext::DrawingContext(EggQtSize size) : size(size) {
+    QPen defaultPen(DEFAULT_PEN_COLOR);
+    defaultPen.setWidthF(size.toCanvas(DEFAULT_LINE_WIDTH));
+    defaultPen.setStyle(Qt::PenStyle::SolidLine);
+    masterPen = defaultPen;
+
     EggQtLayer& layer = newLayer();
     setActive(&layer);
     layer.painter->fillRect(size.rectWhole(), DEFAULT_BACKGBROUND_COLOR);
 }
 
 EggQtLayer& DrawingContext::newLayer() {
-    return layers.emplace_back(size, 20.0);
+    return layers.emplace_back(size, 20.0, masterPen);
 }
 
 void DrawingContext::setActive(EggQtLayer* layer) {
@@ -203,6 +208,7 @@ void drawLine(double dx, double dy) {
     QPointF newCoord = oldCoord + QPointF(dx, dy);
     layer.painter->drawLine(toCanvas(oldCoord), toCanvas(newCoord));
     layer.penCoord = newCoord;
+    printf("%s: pen is %p\n", __func__, &layer.painter->pen());
     updateUI();
 }
 
@@ -352,5 +358,34 @@ void offsetEgg(double dx, double dy) {
     updateUI();
 }
 
+QColor toQColor(unsigned long color) {
+    unsigned long r = (color >> 16) & 0xff;
+    unsigned long g = (color >> 8) & 0xff;
+    unsigned long b = color & 0xff;
+
+    return QColor(qRgb(r, g, b));
+}
+
+static void updatePens() {
+    for (auto& layer : eggQt->ctx->layers) {
+        layer.painter->setPen(eggQt->ctx->masterPen);
+    }
+}
+
+void setPen(unsigned long color, double fWidth) {
+    eggQt->ctx->masterPen.setColor(toQColor(color));
+    eggQt->ctx->masterPen.setWidthF(activeSize().toCanvas(fWidth));
+    updatePens();
+}
+
+void setPenColor(unsigned long color) {
+    eggQt->ctx->masterPen.setColor(toQColor(color));
+    updatePens();
+}
+
+void setPenWidth(double fWidth) {
+    eggQt->ctx->masterPen.setWidthF(activeSize().toCanvas(fWidth));
+    updatePens();
+}
 
 } // namespace eggqt

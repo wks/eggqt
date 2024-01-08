@@ -31,20 +31,23 @@ int main() {
     MovePen(1, 8);
     DrawString("背景");
 
+    SetPen(RED, 0.1);
+
     HEGG obj1 = LayEgg();
-    MovePen(0, 1); // 给文本留一点空间
+    MovePen(1, 1); // 给文本以及线宽留一点空间
     DrawLine(1, 0);
     DrawLine(0, 1);
     DrawLine(-1, 0);
     DrawLine(0, -1);
     DrawString("obj1");
-    MoveEgg(3, 4);
+    MoveEgg(2, 4);
 
     HEGG obj2 = LayEgg();
-    MovePen(1, 1);
+    SetPenColor(GREEN);
+    MovePen(2, 2);
     DrawArc(1, 0, 360);
     DrawString("obj2");
-    MoveEgg(11, 5);
+    MoveEgg(10, 4);
 
     printf("Waiting for events.\n");
 

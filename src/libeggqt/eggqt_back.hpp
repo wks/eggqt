@@ -28,6 +28,7 @@ namespace eggqt {
 class DrawingContext {
 public:
     EggQtSize size;
+    QPen masterPen;
     std::list<EggQtLayer> layers;
     EggQtLayer* activeLayer;
     double devicePixelRatio;
@@ -73,5 +74,9 @@ EggQtLayer* layEgg();
 void setActiveEgg(EggQtLayer* layer);
 void moveEgg(double x, double y);
 void offsetEgg(double dx, double dy);
+
+void setPen(unsigned long color, double fWidth);
+void setPenColor(unsigned long color);
+void setPenWidth(double fWidth);
 
 } // namespace eggqt
