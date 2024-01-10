@@ -39,3 +39,5 @@ target_link_libraries(eggqt
     Boost::coroutine
     fmt::fmt
     )
+
+install(TARGETS eggqt DESTINATION lib)

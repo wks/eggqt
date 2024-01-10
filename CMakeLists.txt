@@ -29,3 +29,5 @@ find_package(fmt REQUIRED)
 
 add_subdirectory(src/libeggqt)
 add_subdirectory(src/examples)
+
+install(FILES src/include/egg.h DESTINATION include)
