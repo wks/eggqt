@@ -28,11 +28,6 @@ foreach(tgt IN LISTS SIMPLE_EXAMPLES)
         ${tgt}.c
         )
 
-    target_include_directories(${tgt}
-        PRIVATE
-        ../include
-        )
-
     target_link_libraries(${tgt}
         eggqt
         )

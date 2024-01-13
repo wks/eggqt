@@ -30,14 +30,19 @@ qt_add_library(eggqt STATIC
 
 target_include_directories(eggqt
     PUBLIC
-    ../include)
+    $<BUILD_INTERFACE:${EGG_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:include>  # <prefix>/include/mylib
+    )
 
 target_link_libraries(eggqt
-    PRIVATE
+    PUBLIC
     Qt6::Core
     Qt6::Widgets
     Boost::coroutine
     fmt::fmt
     )
 
-install(TARGETS eggqt DESTINATION lib)
+install(TARGETS eggqt
+    EXPORT EggQtTargets
+    DESTINATION lib
+    )

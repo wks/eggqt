@@ -27,7 +27,12 @@ qt_standard_project_setup()
 find_package(Boost REQUIRED COMPONENTS coroutine)
 find_package(fmt REQUIRED)
 
+set(EGG_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/src/include)
+
 add_subdirectory(src/libeggqt)
 add_subdirectory(src/examples)
 
-install(FILES src/include/egg.h DESTINATION include)
+install(FILES ${EGG_INCLUDE_DIR}/egg.h DESTINATION include)
+
+install(EXPORT EggQtTargets DESTINATION lib/cmake/EggQt)
+install(FILES cmake/EggQtConfig.cmake DESTINATION lib/cmake/EggQt)
