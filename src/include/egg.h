@@ -18,6 +18,9 @@
 // 我猜sunner的原版Egg就是用纯C语言实现的。
 #ifdef __cplusplus
 extern "C" {
+#else
+// [wks] C语言需要引用stdbool.h来使用bool这个标识符。C++里是关键字，就不必了。
+#include <stdbool.h>
 #endif
 
 // [wks] 不。不使用Win32 API！

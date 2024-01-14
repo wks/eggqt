@@ -14,7 +14,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-qt_add_library(eggqt STATIC
+qt_add_library(eggqt SHARED
     constants.hpp
     eggqt_aux.hpp
     eggqt_back.cpp
@@ -35,7 +35,7 @@ target_include_directories(eggqt
     )
 
 target_link_libraries(eggqt
-    PUBLIC
+    PRIVATE
     Qt6::Core
     Qt6::Widgets
     Boost::coroutine
