@@ -4,7 +4,10 @@
 
 namespace eggqt {
 
-EggQtLayer::EggQtLayer(const EggQtSize& size, double dpr, QPen& pen) : anchor(0.0, 0.0), penCoord(0.0, 0.0) {
+EggQtLayer::EggQtLayer(const EggQtSize& size, double dpr, QPen& pen) : penCoord(0.0, 0.0) {
+    QPointF topLeft(0.0, size.fSize.height());
+    anchor = topLeft;
+
     pixmap = std::make_unique<QPixmap>(size.isize.width() * dpr, size.isize.height() * dpr);
     pixmap->setDevicePixelRatio(dpr);
 

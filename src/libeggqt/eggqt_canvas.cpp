@@ -59,8 +59,7 @@ void EggQtCanvas::paintEvent(QPaintEvent *event) {
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
     for (auto &layer : ctx->layers) {
-        QPointF bottomLeft = ctx->size.toCanvas(layer.anchor);
-        QPointF topLeft = bottomLeft - QPointF(0, double(ctx->size.isize.height()));
+        QPointF topLeft = ctx->size.toCanvas(layer.anchor);
         painter.drawPixmap(topLeft, *layer.pixmap);
     }
 

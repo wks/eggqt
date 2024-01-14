@@ -36,20 +36,21 @@ int main() {
     SetPen(RED, 0.1);
 
     HEGG obj1 = LayEgg();
-    MovePen(1, 1); // 给文本以及线宽留一点空间
+    // 注：MoveEgg的锚点是Egg的左上角而不是左下角。所以我们在左上角作画。这感觉怪怪的，因为原点是左下角。
+    MovePen(1.0, 8.0); // 给文本以及线宽留一点空间
     DrawLine(1, 0);
-    DrawLine(0, 1);
-    DrawLine(-1, 0);
     DrawLine(0, -1);
+    DrawLine(-1, 0);
+    DrawLine(0, 1);
     DrawString("obj1");
-    MoveEgg(2, 4);
+    MoveEgg(2, 6);
 
     HEGG obj2 = LayEgg();
     SetPenColor(GREEN);
-    MovePen(2, 2);
+    MovePen(2, 7);
     DrawArc(1, 0, 360);
     DrawString("obj2");
-    MoveEgg(10, 4);
+    MoveEgg(10, 6);
 
     printf("Waiting for events.\n");
 

@@ -31,15 +31,16 @@ int main() {
 
     HEGG obj1 = LayEgg();
     SetPenColor(RED);
-    MovePen(1, 1);
+    MovePen(1, 7);
     DrawArc(0.5, 0, 360);
-    MoveEgg(3.5, 3.5);
+    // 别忘了，移动的时候锚点的是左上角。
+    MoveEgg(3, 5);
 
     printf("Wait for 1 second...\n");
 
     WaitFor(1000);
 
-    MoveEgg(0, 0);
+    MoveEgg(0, 2);
 
     printf("Setting interval timer...\n");
 
@@ -64,7 +65,7 @@ int main() {
                     break;
                 }
                 nTimeouts += 1;
-                MoveEgg(nTimeouts, 0);
+                MoveEgg(nTimeouts, 2);
                 break;
             }
             default: {
