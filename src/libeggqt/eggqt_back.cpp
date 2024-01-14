@@ -214,6 +214,16 @@ void drawString(const char* pString) {
     QPointF topLeft = toCanvas(layer.penCoord);
     QRectF smallRect = QRectF(topLeft, QSizeF(0, 0));
     QRectF boundingRect = layer.painter->boundingRect(smallRect, pString, getDefaultTextOption());
+
+    layer.painter->save();
+    // Clear the text rect to white.
+    // Some users abuse the old Windows behavior to overwrite old text with new text.
+    layer.painter->setPen(Qt::PenStyle::NoPen);
+    QBrush whiteBrush(QColor::fromRgb(255, 255, 255));
+    layer.painter->setBrush(whiteBrush);
+    layer.painter->drawRect(boundingRect);
+    layer.painter->restore();
+
     layer.painter->drawText(boundingRect, pString, getDefaultTextOption());
     updateUI();
 }
