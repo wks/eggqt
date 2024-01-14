@@ -133,39 +133,16 @@ struct EggQt {
         });
 
         eventCoro = std::make_unique<EventCoroType::pull_type>([this](EventCoroType::push_type& sink) {
-            printf("[EventCoro] Initial return.\n");
             this->eventCoroSink = &sink;
             sink(EventKind::Exit);
-            printf("[EventCoro] Calling this->app->exec()...\n");
             this->app->exec();
-            printf("[EventCoro] back from this->app->exec().  Calling sink(EvnetKind::Exit)...\n");
             this->lastEvent.reset();
             sink(EventKind::Exit);
-            printf("[EventCoro] back from sink()\n");
         });
         assert(eventCoro->get() == EventKind::Exit);
         assert(eventCoroSink != nullptr);
 
-        printf("mainWindow->devicePixelRatio() %lf\n", mainWindow->devicePixelRatio());
-        printf("mainWindow->devicePixelRatioF() %lf\n", mainWindow->devicePixelRatioF());
-        printf("canvas->devicePixelRatio() %lf\n", canvas->devicePixelRatio());
-        printf("canvas->devicePixelRatioF() %lf\n", canvas->devicePixelRatioF());
-        printf("mainWindow->window() %p\n", mainWindow->window());
-        printf("canvas->window() %p\n", canvas->window());
-        printf("mainWindow->window()->devicePixelRatio() %lf\n", mainWindow->window()->devicePixelRatio());
-        printf("canvas->window()->devicePixelRatio() %lf\n", canvas->window()->devicePixelRatio());
-
         mainWindow->show();
-
-        printf("mainWindow->devicePixelRatio() %lf\n", mainWindow->devicePixelRatio());
-        printf("mainWindow->devicePixelRatioF() %lf\n", mainWindow->devicePixelRatioF());
-        printf("canvas->devicePixelRatio() %lf\n", canvas->devicePixelRatio());
-        printf("canvas->devicePixelRatioF() %lf\n", canvas->devicePixelRatioF());
-        printf("mainWindow->window() %p\n", mainWindow->window());
-        printf("canvas->window() %p\n", canvas->window());
-        printf("mainWindow->window()->devicePixelRatio() %lf\n", mainWindow->window()->devicePixelRatio());
-        printf("canvas->window()->devicePixelRatio() %lf\n", canvas->window()->devicePixelRatio());
-
     }
 };
 
@@ -222,7 +199,6 @@ void drawLine(double dx, double dy) {
     QPointF newCoord = oldCoord + QPointF(dx, dy);
     layer.painter->drawLine(toCanvas(oldCoord), toCanvas(newCoord));
     layer.penCoord = newCoord;
-    printf("%s: pen is %p\n", __func__, &layer.painter->pen());
     updateUI();
 }
 
@@ -258,11 +234,9 @@ void drawArc(double r, double dStart, double dSweep) {
     QPointF center = size.toCanvas(layer.penCoord);
     QPointF topLeft(center.x() - rCanvas, center.y() - rCanvas);
     QRectF arcRect(topLeft, QSizeF(rCanvas * 2.0, rCanvas * 2.0));
-    printf("arcRect: %lf %lf %lf %lf\n", arcRect.left(), arcRect.top(), arcRect.right(), arcRect.bottom());
 
     int startAngle = dStart * 16;
     int spanAngle = dSweep * 16;
-    printf("Angles: %d %d\n", startAngle, spanAngle);
 
     layer.painter->drawArc(arcRect, startAngle, spanAngle);
     updateUI();
@@ -277,11 +251,9 @@ void drawEllipticalArc(double rx, double ry, double dStart, double dSweep) {
     QPointF center = size.toCanvas(layer.penCoord);
     QPointF topLeft(center.x() - rxCanvas, center.y() - ryCanvas);
     QRectF arcRect(topLeft, QSizeF(rxCanvas * 2.0, ryCanvas * 2.0));
-    printf("ellipticalArcRect: %lf %lf %lf %lf\n", arcRect.left(), arcRect.top(), arcRect.right(), arcRect.bottom());
 
     int startAngle = dStart * 16;
     int spanAngle = dSweep * 16;
-    printf("Angles: %d %d\n", startAngle, spanAngle);
 
     layer.painter->drawArc(arcRect, startAngle, spanAngle);
     updateUI();
@@ -291,10 +263,8 @@ static EventKind waitGeneral(WaitKind kind) {
     assert(eggQt != nullptr);
     eggQt->waitKind = kind;
 
-    printf("Doing coroutine jump...\n");
     (*eggQt->eventCoro)();
     EventKind result = eggQt->eventCoro->get();
-    printf("Back from coroutine.\n");
 
     eggQt->waitKind.reset();
     return result;
@@ -362,13 +332,11 @@ void setActiveEgg(EggQtLayer* layer) {
 
 void moveEgg(double x, double y) {
     activeLayer().anchor = QPointF(x, y);
-    printf("Layer: %p, anchor is now %lf %lf\n", &activeLayer(), activeLayer().anchor.x(), activeLayer().anchor.y());
     updateUI();
 }
 
 void offsetEgg(double dx, double dy) {
     activeLayer().anchor += QPointF(dx, dy);
-    printf("Layer: %p, anchor is now %lf %lf\n", &activeLayer(), activeLayer().anchor.x(), activeLayer().anchor.y());
     updateUI();
 }
 

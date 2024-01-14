@@ -19,7 +19,6 @@
 namespace eggqt {
 
 EggQtMainWindow::EggQtMainWindow() {
-    printf("Window: DPR = %lf\n", this->devicePixelRatio());
 }
 
 } // namespace eggqt

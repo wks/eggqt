@@ -59,15 +59,9 @@ void EggQtCanvas::paintEvent(QPaintEvent *event) {
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
     for (auto &layer : ctx->layers) {
-        printf("Layer: %p, anchor is %lf %lf\n", &layer, layer.anchor.x(), layer.anchor.y());
         QPointF bottomLeft = ctx->size.toCanvas(layer.anchor);
         QPointF topLeft = bottomLeft - QPointF(0, double(ctx->size.isize.height()));
-        printf("TopLeft: %lf %lf\n", topLeft.x(), topLeft.y());
         painter.drawPixmap(topLeft, *layer.pixmap);
-        //layer.pixmap->save("layertmp.png");
-        printf("window()->devicePixelRatio(): %lf\n", window()->devicePixelRatio());
-        printf("layer.pixmap->devicePixelRatio(): %lf\n", layer.pixmap->devicePixelRatio());
-        //assert(window()->devicePixelRatio() == layer.pixmap->devicePixelRatio());
     }
 
     {
@@ -84,8 +78,6 @@ void EggQtCanvas::paintEvent(QPaintEvent *event) {
         defaultFont.setStyle(QFont::StyleNormal);
         defaultFont.setWeight(QFont::Normal);
         painter->setFont(defaultFont);
-
-        painter->drawText(100, 100, "Hello 世界");
     }
 }
 
